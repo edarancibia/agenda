@@ -86,7 +86,7 @@ $(document).ready(function(){
     });
 
 	$('#btnCancelEv').click(function(event){
-	  var id = $('#idEvento').val();
+	  var id = $('#txtIdEvento').val();
       $.ajax({
       	type: 'post',
       	url: baseUrl + 'Events/UpdateEvent',
@@ -125,9 +125,10 @@ $(document).ready(function(){
 		});
 	});
 
+	//comienza atencion desde un evento de la agenda
 	$('#btnComenzar').click(function(){
 		var idEvento2 = $('#txtIdEvento').val();
-		window.location.href= baseUrl + 'FichaPed?idEvento='+idEvento2;
+		window.location.href= baseUrl + 'Ficha?idEvento='+idEvento2;
 	});
 
 	$('#btnInfoPac').click(function(){
@@ -254,5 +255,67 @@ $(document).ready(function(){
 			}
 		});
 	});
+
+	//- - - - - - - -GUARDA FICHA SIMPLE - - - - - - - -
+	$('#btnGuardaFsimple').click(function(){
+		var obs = $('#txtObsFicha').val();
+		var rut_pac = $('#txtRutPac4').val();
+		var idEvento_ = $('#idEvento3').val();
+		var motivo = $('#txtMotivo').val();
+
+		var promise = $.ajax({
+			type: 'post',
+			url: baseUrl + 'Ficha/Save',
+			data: {rut_pac: rut_pac, obs: obs, motivo:motivo},
+			success: function(){
+				alert('Guardado exitosamente');
+						$('#txtObsFicha').val('');
+						$('#txtMotivo').val('');
+			}
+		});
+		promise.then(function(){
+			$.ajax({
+				type: 'post',
+				url: baseUrl + 'Events/updateEvent',
+				data: {id: idEvento_, request: 2},
+			});
+		});
+	});
+
+	//Historial de atenciones
+	$('#list-historial a').on('click', function () {
+	  	var a = $(this).attr('value');
+	  	
+	  	$.ajax({
+	  		type: 'post',
+	  		ur: baseUrl+'Ficha/getFichabyId',
+	  		data: {idficha: a},
+	  		success: function(d){
+	  			//var obj = JSON.parse(d);
+
+	  			console.log(d.ficha);
+	  		},
+	  		error: function(){
+	  			console.log('error al buscar ficha by ID');
+	  		}
+	  	});
+	});
+
+
+	//- - - - - -  - GUARDA NOMBRE CENTRO MEDICO - - - - - - 
+	/*$('#btnAddCentro').click(function(){
+		var obs = $('#txtObsFicha').val();
+		var rut_pac = $('#txtRutPac4').val();
+
+		$.ajax({
+			type: 'post',
+			url: baseUrl + 'Ficha/Save',
+			data: {rut_pac: rut_pac, obs: obs},
+			success: function(){
+				alert('Guardado exitosamente');
+						$('#txtObsFicha').val('');
+			}
+		});
+	});*/
 
 });

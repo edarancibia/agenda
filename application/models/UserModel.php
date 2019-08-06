@@ -17,4 +17,10 @@ class UserModel extends CI_Model{
 			return null;
 		}
 	}
+
+	//guarda relacion usuario/centro
+	public function relUsuarioCentro($idusuario,$idCentro){
+		$sql = $this->db->query("insert into usuario_centro idUsuario,idCentro values('$idusuario','$idCentro')");
+		return ($this->db->affected_rows() != 1) ? false : true;
+	}
 }

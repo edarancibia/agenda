@@ -8,6 +8,17 @@
 	<br>
 	<div class="row">
 		<div class="col-md-5" align="center">
+
+			<table class="table" style="width: 600px; margin-left: 200px;">
+				<tr>
+					<td>Aún no se ha agregado un centro médico, hazlo aquí:</td>
+					<td><input type="text" class="form-control" id="txtNomCentro"></td>
+				</tr>
+				<tr>
+					<td><button type="button" class="btn btn-info" id="btnAddCentro">Agregar</button></td>
+				</tr>
+			</table>
+			
 			<table border="0" class="table" style="width: 450px; margin-left: 200px;">
 				<tbody>
 					<th></th>

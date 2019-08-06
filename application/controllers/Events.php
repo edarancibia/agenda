@@ -9,16 +9,8 @@ class Events extends CI_Controller{
 	}
 
 	public function Index(){
-		//$rut_med = $this->input->post('cboProfesional',TRUE);
-		//$data['events'] = $this->EventsModel->getAll($rut_med);
-
-		/*if($rut_med > 0){
-			$data['medico'] = $this->ProfesionalModel->getByRut($rut_med);	
-		}else{
-			$data['medico'] = 'Nadie';
-		}*/
 		
-		$data['profesionales'] = $this->ProfesionalModel->getAll();
+		$data['profesionales'] = $this->ProfesionalModel->getProfByCentro($this->session->userdata('idCentro'));
 		$this->load->view('template/header');
 		$this->load->view('template/nav');
 		$this->load->view('index2', $data);
@@ -35,7 +27,7 @@ class Events extends CI_Controller{
 			$data['medico'] = 'Nadie';
 		}
 		
-		$data['profesionales'] = $this->ProfesionalModel->getAll();
+		$data['profesionales'] = $this->ProfesionalModel->getProfByCentro($this->session->userdata('idCentro'));
 		$this->load->view('template/header');
 		$this->load->view('template/nav');
 		$this->load->view('index3', $data);

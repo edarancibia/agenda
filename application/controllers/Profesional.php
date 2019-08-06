@@ -9,7 +9,7 @@ class Profesional extends CI_Controller{
 
 	//get all
 	public function GetAll(){
-		$data['prof'] = $this->ProfesionalModel->getAll();
+		$data['prof'] = $this->ProfesionalModel->getProfByCentro($this->session->userdata('idCentro'));
 		echo json_encode($data);
 	}
 
@@ -18,7 +18,11 @@ class Profesional extends CI_Controller{
 		$nomProf = $this->input->post('nomProf');
 		$apeProf = $this->input->post('apeProf');
 		$espe = $this->input->post('espe');
-		$this->ProfesionalModel->createProfesional($nomProf,$apeProf,$espe);
+		$tipo_ficha = 1;
+		$cod_centro = $this->session->userdata('idCentro');
+		$this->ProfesionalModel->createProfesional($nomProf,$apeProf,$espe,$tipo_ficha,$cod_centro);
 	}
+
+	//obtiene profesionales x centro medico
 
 }

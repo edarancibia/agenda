@@ -23,4 +23,10 @@ class CentroModel extends CI_Model{
 			return null;
 		}	
 	}
+
+	//nuevo centro
+	public function addCentro($nombre,$direccion){
+		$sql = $this->db->query("insert into centro (nombre,direccion) values ('$nombre','$direccion')");
+		return ($this->db->affected_rows() != 1) ? false : true;
+	}
 }

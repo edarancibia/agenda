@@ -7,6 +7,12 @@ class ProfesionalModel extends CI_Model{
 		return $query->result_array();
 	}
 
+	//obtiene profesionales x centro medico
+	public function getProfByCentro($idCentro){
+		$sql = $this->db->query('select * from profesional where cod_centro='.$idCentro.'');
+		return $sql->result_array();
+	}
+
 	//get by rut
 	public function getByRut($rut){
 		$sql = $this->db->query('select rut,nombre,a_pat from profesional where rut='.$rut.'');
@@ -27,9 +33,10 @@ class ProfesionalModel extends CI_Model{
 	}
 
 	//nuevo profesional
-	public function createProfesional($nom,$ape,$espe){
-		$sql = $this->db->query("insert into profesional(nombre,a_pat,cod_esp) 
-			values('$nom','$ape','$espe')");
+	public function createProfesional($nom,$ape,$espe,$tipo_ficha,$cod_centro){
+		$sql = $this->db->query("insert into profesional(rut,nombre,a_pat,cod_esp,tipo_ficha,cod_centro) 
+			values(1,'$nom','$ape','$espe','$tipo_ficha','$cod_centro')");
 		return ($this->db->affected_rows() != 1) ? false : true;
 	}
+
 }

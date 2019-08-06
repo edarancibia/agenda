@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class EventsModel extends CI_Model{
 	public function getAll($rut_med){
-		$query = $this->db->query("select a.*, CONCAT(b.a_pat ,' ', b.a_mat ,' ',b.nombre) as title from events a, paciente b where a.estado <> 0 and a.rut_num = b.rut_num and a.rut_med = '$rut_med'");
+		$query = $this->db->query("select a.*, CONCAT(b.a_pat ,' ', b.a_mat ,' ',b.nombre) as title from events a, paciente b where a.estado not in (0,2) and a.rut_num = b.rut_num and a.rut_med = '$rut_med'");
 		return $query->result_array();
 	}
 

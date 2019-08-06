@@ -37,7 +37,12 @@ class Home extends CI_Controller {
 			$resulUser = $this->UserModel->getUserData($email);
 			$idUser = $resulUser->idusuario;
 			$resultCentro = $this->CentroModel->getIdCentro($idUser);
+
+			if (empty($resultCentro)) {
+				echo 'No tiene centro';
+			}
 			$resultIdCentro = $resultCentro->idCentro;
+			$this->session->set_userdata('idCentro',$resultIdCentro);
 			$resultNomCentro = $this->CentroModel->GetNomCentro($resultIdCentro);
 			$this->session->set_userdata('centro',$resultNomCentro->nombre);
 
@@ -61,5 +66,7 @@ class Home extends CI_Controller {
 		$this->load->view('login');
 	}
 
-
+	public function newCentro(){
+		
+	}
 }
