@@ -60,8 +60,8 @@ class Ficha extends CI_Controller{
 	//get ficha byID
 	public function getFichabyId(){
 		$idficha = $this->input->post('idficha');
-		$data['ficha'] = $this->FichaModel->getById($idficha);
-		echo json_encode($data);
+		$dataF['ficha'] = $this->FichaModel->getById($idficha);
+		echo json_encode($dataF);
 	}
 
 }

@@ -29,6 +29,10 @@
               </li>
             </ul>
           
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Buscar paciente" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+            </form>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
@@ -39,6 +43,6 @@
     </div>
 
       <div style="width: 300px;float:right;">
-      <p><?php echo $this->session->userdata('user'); ?></p>
+      <p class="fuente"><?php echo $this->session->userdata('user'); ?></p>
     </div>
   </div>

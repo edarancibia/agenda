@@ -19,9 +19,9 @@ class FichaModel extends CI_Model{
 	}
 
 	public function getById($idficha){
-		$sql = $this->db->query("select * from ficha where idficha='$idficha'");
+		$sql = $this->db->query('SELECT * from ficha WHERE idficha='.$idficha.'');
 
-		if($sql->num_rows() > 0) {
+		if ($sql->num_rows() >0) {
 			return $sql->row();
 		}else{
 			return null;

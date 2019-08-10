@@ -1,3 +1,25 @@
-.lista:hover { 
-  	background-color: yellow;
+#nav{
+    margin-top: -;
+    margin-bottom: 5px;
+}
+
+navbar-fixed-top { position: absolute!important; }
+
+.fuente{
+	font-size: 12px;
+}
+
+.tabla{
+	margin-bottom: 0px;
+}
+.margen{
+	margin-bottom: 0;
+}
+
+#panel{
+	padding-top: 5px;
+}
+
+.borde_right{
+	padding-right: 5px;
 }

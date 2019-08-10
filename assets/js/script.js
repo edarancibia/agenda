@@ -20,7 +20,7 @@ $(document).ready(function(){
 	        		success: function(data){
 	        			var obj = JSON.parse(data);
 	        			var nom = obj['nombre'];
-		        		console.log(data);
+		        		//console.log(data);
 		        		//$('#txtNomPac').val(obj.paciente.nombre+' '+obj.paciente.a_pat+' '+obj.paciente.a_mat);
 		        		if (data.length > 17) {
 		        			//alert('hay datos');
@@ -283,17 +283,18 @@ $(document).ready(function(){
 	});
 
 	//Historial de atenciones
-	$('#list-historial a').on('click', function () {
+	$('#list-historial a').on('click', function (e) {
 	  	var a = $(this).attr('value');
 	  	
 	  	$.ajax({
 	  		type: 'post',
-	  		ur: baseUrl+'Ficha/getFichabyId',
+	  		url: baseUrl+'Ficha/getFichabyId',
 	  		data: {idficha: a},
-	  		success: function(d){
-	  			//var obj = JSON.parse(d);
-
-	  			console.log(d.ficha);
+	  		success: function(data){
+	  			var obj = JSON.parse(data);
+	  			$('#txtMotivo').val(obj.ficha.motivo);
+	  			$('#txtObsFicha').val(obj.ficha.obsGenerales);
+	  			
 	  		},
 	  		error: function(){
 	  			console.log('error al buscar ficha by ID');
@@ -301,6 +302,12 @@ $(document).ready(function(){
 	  	});
 	});
 
+	//limpiar form ficha
+	$('#btnLimpiar').on('click',function(){
+		$('#txtMotivo').val('');
+	  	$('#txtObsFicha').val('');
+	  	$('#txtMotivo').focus();
+	});
 
 	//- - - - - -  - GUARDA NOMBRE CENTRO MEDICO - - - - - - 
 	/*$('#btnAddCentro').click(function(){
