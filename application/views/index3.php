@@ -6,9 +6,12 @@
 <script type="text/javascript">
 $(document).ready(function(){
   var baseUrl = 'http://localhost/clinic_calendar/index.php/';
+
     //INDEX - - - GET EVENTOS BY PROFESIONAL
 
       $('#calendar').fullCalendar({
+
+        lang: 'es',
 
         monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
         monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
@@ -17,9 +20,9 @@ $(document).ready(function(){
 
         businessHours: {
           // days of week. an array of zero-based day of week integers (0=Sunday)
-          dow: [ 1, 2, 3, 4], // Monday - Thursday
+          dow: [ 1, 2, 3, 4,5], // Monday - Thursday
 
-          start: '10:00', // a start time (10am in this example)
+          start: '09:00', // a start time (10am in this example)
           end: '19:00', // an end time (6pm in this example)
         },
 
@@ -33,7 +36,7 @@ $(document).ready(function(){
           height: 500,
           slotMinutes: 15,
 
-          minTime: '10:00',
+          minTime: '09:00',
           maxTime: '19:00',
           selectable: true,
           allDaySlot: false,
@@ -42,6 +45,7 @@ $(document).ready(function(){
           eventColor: '#378006',
           eventBorderColor: 'blue',
           displayEventTime: false,
+          hiddenDays: [0],
 
           events: [ 
             <?php 
@@ -65,7 +69,6 @@ $(document).ready(function(){
                 title: '<?php echo $event['title']; ?>',
                 start: '<?php echo $start; ?>',
                 end: '<?php echo $end; ?>',
-
               },
             <?php endforeach; ?>
             ],
@@ -122,46 +125,85 @@ $(document).ready(function(){
           },
       
       });
+
+  
+
+    $.datepicker.regional['es'] = {
+         closeText: 'Cerrar',
+         prevText: '< Ant',
+         nextText: 'Sig >',
+         currentText: 'Hoy',
+         monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+         monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+         dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+         dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+         dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+         weekHeader: 'Sm',
+         dateFormat: 'yy-mm-dd',
+         firstDay: 1,
+         isRTL: false,
+         showMonthAfterYear: false,
+         yearSuffix: ''
+    };
+
+     $.datepicker.setDefaults($.datepicker.regional['es']);
+
+    $('#datepicker').datepicker({
+        inline: true,
+        onSelect: function(dateText, inst) {
+            var d = new Date(dateText);
+            $('#calendar').fullCalendar('gotoDate', d);
+        }
+    }); 
+
   });
 </script>
 <body>
-  <div class="container">
-      <div class="row">
-        <form action="<?php echo base_url('index.php/Events/Index2'); ?>" method="post">
-          <label>Profesional:</label>
-        <select id="cboProfesional" name="cboProfesional">
-          <option value="0" selected>Seleccione</option>
-          <?php
-          foreach($profesionales as $each)
-          {
-              ?>
-              <option value="<?=$each['rut']?>"><?=$each['a_pat'].' '.$each['a_mat'].' '.$each['nombre']?></option>
+  <div class="container-fluid">
+ 
+      <div class="row col-xs-12">
+          <div class="col-xs-3" id="datepicker">
+
+            <form action="<?php echo base_url('index.php/Events/Index2'); ?>" method="post">
+            
+            <label>Profesional:</label>
+            <select id="cboProfesional" class="form-control" name="cboProfesional">
+              <option value="0" selected>Seleccione</option>
               <?php
-          }
+              foreach($profesionales as $each)
+              {
+                  ?>
+                  <option value="<?=$each['rut']?>"><?=$each['a_pat'].' '.$each['a_mat'].' '.$each['nombre']?></option>
+                  <?php
+              }
 
-          ?>
-        </select>
+              ?>
+            </select>
+            <br>
 
-        <button type="submit" name="btnFiltrar" id="btnFiltrar" class="btn btn-primary">Ver Agenda</button>
-        <label><?php 
-        if ((!is_null($medico->nombre)) && (!is_null($medico->rut))&& (!is_null($medico->a_pat))) {     
-            echo $medico->nombre.' '.$medico->a_pat;
-          }else{
-            echo "Seleccione un profesional";
-          }
+            <button type="submit" name="btnFiltrar" id="btnFiltrar" class="btn btn-primary">Ver Agenda</button>
+          <br><br>
+          
+            <label><?php 
+            if ((!is_null($medico->nombre)) && (!is_null($medico->rut))&& (!is_null($medico->a_pat))) {     
+                echo $medico->nombre.' '.$medico->a_pat;
+              }else{
+                echo "Seleccione un profesional";
+              }
 
-          ?>
+              ?>
+            
+            
+            </label>
+            <input type="hidden" name="txtRutmedHidden" id="txtRutmedHidden" value='<?php echo $medico->rut?> '>
+          </div>
         
-        
-        </label>
-        <input type="hidden" name="txtRutmedHidden" id="txtRutmedHidden" value='<?php echo $medico->rut?> '>
-      </div>
-        
-        
-    <div id='calendar'>
+    <div class="col-xs-9" id='calendar'>
       
     </div>
+    </div>
 </form>
+</div>
   <div class="modal fade" id="modalNew">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -239,16 +281,25 @@ $(document).ready(function(){
                 </button>
               </div>
               <div class="modal-body">
-                <label>Rut</label>
-                <input type="text" id="txtRutPac" name="txtRutPac" class="form-control" disabled>
+                <input type="hidden" id="txtRutPac" name="txtRutPac" class="form-control" disabled>
                 <label>Nombre</label>
                 <input type="text" class="form-control" name="txtNomPac2" id="txtNomPac2">
                 <label>Apellido Paterno</label>
                 <input type="text" name="txt" id="txtApat" class="form-control">
                 <label>Apellido Materno</label>
                 <input type="text" name="txtAmat" id="txtAmat" class="form-control">
+                <label>Sexo</label>
+                <select class="form-control" id="cboSexo2">
+                  <option selected value="">Seleccione</option>
+                  <option value="1">Hombre</option>
+                  <option value="0">Mujer</option>
+                </select>
+                <label>Fecha nacimiento</label>
+                <input type="date" id="txtFnac" class="form-control" required>
                 <label>Teléfono</label>
                 <input type="text" name="txtTel" id="txtTel" class="form-control">
+                <label>Email</label>
+                <input type="text" name="txtEmail2" id="txtEmail2" class="form-control">
               </div>
               <div class="modal-footer">
                 <button type="button" id="btnGuardaPac" class="btn btn-primary">Aceptar</button>

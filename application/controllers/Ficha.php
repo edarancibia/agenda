@@ -27,6 +27,8 @@ class Ficha extends CI_Controller{
 
 		if($rut_pac != null){
 			$data['datosPac'] = $this->PacienteModel->getByRut($rut_pac->rut_num);
+			//$datoEdad = $this->PacienteModel->getByRut($rut_pac->rut_num);
+
 			$this->load->view('template/header');
 			$this->load->view('template/nav');
 			$this->load->view('template/cab_pac',$data);

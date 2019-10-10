@@ -29,9 +29,6 @@
               </li>
             </ul>
           
-            <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" id="autocomplete" type="search" placeholder="Buscar apellido paciente" aria-label="Search">
-            </form>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>

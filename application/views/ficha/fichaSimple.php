@@ -4,7 +4,7 @@
 		
 	
 		<div class="row">
-		<table class="table" style="margin-bottom: 0px;">
+		<table style="margin-bottom: 0px;">
 			<tr>
 				<td>
 					<div class="col-sm-4">
@@ -30,6 +30,7 @@
 			</tr>
 		</table>
 		</div>
+		<br>
 		<table border="0">
 			<tr>
 				<td class="borde_right"><button type="button" class="btn btn-primary" id="btnGuardaFsimple">Guardar</button></td>

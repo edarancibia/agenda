@@ -6,19 +6,25 @@
 	    <div class="row">
 	    	<table class="table">
 	    		<tr>
-	    			<td>Rut:<input type="text" name="txtRutPac4" id="txtRutPac4" class="form-control" value="<? echo $pac->rut_num;?>" disabled></td>
+	    			<td><strong>Rut:</strong> <? echo $pac->rut_num;?></td>
 
-	    			<td>Fecha Nac:
-	    				<input type="text" name="txtFecNac" class="form-control" value="<? echo $datosPac->fecha_nac?>" disabled></td>
+	    			<td><strong>Fecha Nac: </strong>
+	    				<? echo $datosPac->fecha_nac ?></td>
 
-	    			<td>Sexo:
-	    				<input value="<? if($datosPac->sexo == 0){
+	    			<td><strong>Edad:</strong>
+	    				<? $fechaActual = date("Y-m-d H:i:s");
+	    				   $edad = $fechaActual - $datosPac->fecha_nac;
+	    				   echo $edad .' '. 'años'; ?>
+	    			</td>
+
+	    			<td><strong>Sexo:</strong>
+	    				<? if($datosPac->sexo == 0){
 	    					echo "Mujer";
 	    				} else{ echo  "Hombre";
 	    			}
-	    				?> " type="text" name="txtSexo" id="txtSexo" class="form-control" disabled></td>
+	    				?> </td>
 
-	    			<td><button type="button" class="btn  btn-info" id="btnInfoPac">Completar info</button></td>
+	    			<td></td>
 	    		</tr>
 	    	</table>
 	    </div>

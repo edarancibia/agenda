@@ -1,5 +1,25 @@
 $(document).ready(function(){
 
+	function configToastr(){
+		toastr.options = {
+		  "closeButton": true,
+		  "debug": false,
+		  "newestOnTop": false,
+		  "progressBar": true,
+		  "positionClass": "toast-top-right",
+		  "preventDuplicates": true,
+		  "onclick": null,
+		  "showDuration": "300",
+		  "hideDuration": "1000",
+		  "timeOut": "5000",
+		  "extendedTimeOut": "1000",
+		  "showEasing": "swing",
+		  "hideEasing": "linear",
+		  "showMethod": "fadeIn",
+		  "hideMethod": "fadeOut"
+		}
+	}
+
 	var baseUrl = 'http://localhost/clinic_calendar/index.php/';
 
 	$('.input-number').on('input', function () { 
@@ -15,7 +35,7 @@ $(document).ready(function(){
 
 	        	$.ajax({
 	        		type: 'post',
-	        		url: baseUrl + 'Paciente/GetPaciente',
+	        		url: baseUrl + 'Paciente/GetPaciente2',
 	        		data: {rut_num: rut_num},
 	        		success: function(data){
 	        			var obj = JSON.parse(data);
@@ -74,13 +94,20 @@ $(document).ready(function(){
 
     //event click
     $('#btnConfirmar').click(function(event){
-      var id = $('#idEvento').val();
+      var id = $('#txtIdEvento').val();
       $.ajax({
       	type: 'post',
       	url: baseUrl + 'Events/UpdateEvent',
       	data: {id: id, request: 1},
       	success: function(){
       		alert('Confirmada');
+      		var calendar = new Calendar(calendarEl, {
+			  events: [
+			    // my event data
+			  ],
+			  eventColor: '#180680'
+			});
+
       	}
       });
     });
@@ -109,20 +136,37 @@ $(document).ready(function(){
 		var apat = $('#txtApat').val();
 		var amat = $('#txtAmat').val();
 		var tel = $('#txtTel').val();
+		var sexo = $('#cboSexo2').val(); 
+		var email = $('#txtEmail2').val();
+		var fnac = $('#txtFnac').val();
 
-		$.ajax({
-			type: 'post',
-			url: baseUrl + 'Paciente/NewPaciente',
-			data: {rut: rut,nombre: nom, apat: apat, amat: amat, fono: tel},
-			success: function(){
-				alert('Paciente guardado!');
-				$('#modalNewPaciente').modal('hide');
-				$('#txtNomPac').val(nom+' '+apat+' '+amat);
-			},
-			error: function(){
-				console.log('error al guardar paciente');
+		if(nom == "" || apat ==""){
+			alert('Debe indicar nombre y apellido');
+		}else{
+			if(sexo == ""){
+		    	alert('Debe seleccionar sexo');
+			} else {
+				if(fnac == ""){
+					alert('Ingrese fecha de nacimiento');
+				}else{
+					$.ajax({
+						type: 'post',
+						url: baseUrl + 'Paciente/NewPaciente',
+						data: {rut: rut,nombre: nom, apat: apat, amat: amat, fono: tel,email: email,sexo: sexo,fnac: fnac},
+						success: function(){
+							toastr.success('Paciente guardado!');
+							$('#modalNewPaciente').modal('hide');
+							$('#txtNomPac').val(nom+' '+apat+' '+amat);
+						},
+						error: function(){
+							console.log('error al guardar paciente');
+						}
+					});
+				}
 			}
-		});
+
+		}
+
 	});
 
 	//comienza atencion desde un evento de la agenda
@@ -142,15 +186,11 @@ $(document).ready(function(){
 		
 		var rut = $('#txtRutPac4').val();
 		var fnac = $('#txtFechaNac2').val();
-		var sexo = $('#cboSexo').val();
-		var dir = $('#txtDir').val();
-		var tel = $('#txtTel').val();
-		var mail = $('#txtMail').val();
 
 		$.ajax({
 			type: 'post',
 			url: baseUrl + 'Paciente/UpdatePaciente',
-			data: {rut: rut,fnac: fnac, sexo: sexo, dir: dir, fono: tel, mail: mail},
+			data: {rut: rut,fnac: fnac},
 			success: function(){
 				console.log('Datos guardados');
 				$('#modalInfoPaciente').modal('hide');
@@ -203,7 +243,7 @@ $(document).ready(function(){
 		var mail2 = $('#txt_mail_confirm').val();
 
 		if (email != mail2) {
-			alert('Los correos no coinciden');
+			toastr.error('Los correos no coinciden');
 			$('#txt_mail_confirm').val('');
 			$('#txt_mail_confirm').focus();			
 		}else {
@@ -224,14 +264,14 @@ $(document).ready(function(){
 					$('#txt_mail_confirm').val('');
 	         	},
 	         	error: function(){
-	         		alert('Error al intentar registrar usuario');
+	         		toastr.error('Error al intentar registrar usuario');
 	         	}
 	         });
 
 	         
 		    }else if(pass1 !== pass2){
 		         //Si no son iguales
-		         alert("Las contraseñas no coinciden");
+		         toastr.error("Las contraseñas no coinciden");
 		         $('#txt_reg_pass').focus();
 		    }
 		}
@@ -248,7 +288,7 @@ $(document).ready(function(){
 			url: baseUrl + 'Profesional/newProfresional',
 			data: {nomProf: nomProf, apeProf: apeProf, espe: espe},
 			success: function(){
-				alert('Profesional registrado exitosamente');
+				toastr.success('Profesional registrado exitosamente');
 						$('#txtNomProf').val('');
 						$('#txtApeProf').val('');
 						$('#cboEspe').val('');
@@ -258,28 +298,37 @@ $(document).ready(function(){
 
 	//- - - - - - - -GUARDA FICHA SIMPLE - - - - - - - -
 	$('#btnGuardaFsimple').click(function(){
-		var obs = $('#txtObsFicha').val();
-		var rut_pac = $('#txtRutPac4').val();
-		var idEvento_ = $('#idEvento3').val();
-		var motivo = $('#txtMotivo').val();
 
-		var promise = $.ajax({
-			type: 'post',
-			url: baseUrl + 'Ficha/Save',
-			data: {rut_pac: rut_pac, obs: obs, motivo:motivo},
-			success: function(){
-				alert('Guardado exitosamente');
-						$('#txtObsFicha').val('');
-						$('#txtMotivo').val('');
-			}
-		});
-		promise.then(function(){
-			$.ajax({
+
+		if($('#txtMotivo').val()=="" && $('#txtObsFicha').val()==""){
+			toastr.warning('Se debe ingresar un motivo de consulta o una observación');
+		}
+		else{
+
+			var obs = $('#txtObsFicha').val();
+			var rut_pac = $('#txtRutPac4').val();
+			var idEvento_ = $('#idEvento3').val();
+			var motivo = $('#txtMotivo').val();
+
+			var promise = $.ajax({
 				type: 'post',
-				url: baseUrl + 'Events/updateEvent',
-				data: {id: idEvento_, request: 2},
+				url: baseUrl + 'Ficha/Save',
+				data: {rut_pac: rut_pac, obs: obs, motivo:motivo},
+				success: function(){
+					toastr.success('Guardado exitosamente');
+							$('#txtObsFicha').val('');
+							$('#txtMotivo').val('');
+				}
 			});
-		});
+			promise.then(function(){
+				$.ajax({
+					type: 'post',
+					url: baseUrl + 'Events/updateEvent',
+					data: {id: idEvento_, request: 2},
+				});
+			});	
+		}
+		
 	});
 
 	//Historial de atenciones
@@ -307,6 +356,22 @@ $(document).ready(function(){
 		$('#txtMotivo').val('');
 	  	$('#txtObsFicha').val('');
 	  	$('#txtMotivo').focus();
+	});
+
+
+	$('#autocomplete').each(function(i, el) {
+	    var that = $(el);
+	    that.autocomplete({
+	        source: baseUrl+'Paciente/getPacientes',
+	        select: function( event , ui ) {
+	        	$('#autocomplete').val(ui.item.label);
+	        	var pac = ui.item.value;
+
+	        	window.location.href = baseUrl + "Paciente/GetPaciente?pac="+pac;
+	            //alert( "You selected: " + ui.item.label );
+	        }
+	    });
+
 	});
 
 	//- - - - - -  - GUARDA NOMBRE CENTRO MEDICO - - - - - - 
