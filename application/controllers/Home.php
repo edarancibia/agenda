@@ -29,8 +29,9 @@ class Home extends CI_Controller {
 
 			$data = $this->UserModel->getUserData($email);
 			$userName = $data->nombre.' '.$data->a_pat.' '.$data->a_mat;
+			$perfil = $data->perfil;
 			$this->session->set_userdata('user',$userName);
-
+			$this->session->set_userdata('perfil',$perfil);
 			$email = $this->session->userdata('usermail');
 
 			//obtiene nombre del centro medico
@@ -38,19 +39,24 @@ class Home extends CI_Controller {
 			$idUser = $resulUser->idusuario;
 			$resultCentro = $this->CentroModel->getIdCentro($idUser);
 
-			if (empty($resultCentro)) {
-				echo 'No tiene centro';
-			}
 			$resultIdCentro = $resultCentro->idCentro;
 			$this->session->set_userdata('idCentro',$resultIdCentro);
 			$resultNomCentro = $this->CentroModel->GetNomCentro($resultIdCentro);
 			$this->session->set_userdata('centro',$resultNomCentro->nombre);
+			
+			if (empty($resultCentro)) {
+				echo 'No tiene centro';
 
-			//obtiene especialiades
-			$data->especialiades = $this->ProfesionalModel->getEspecialidades();
-			$this->load->view('template/header');
-			$this->load->view('template/nav');
-			$this->load->view('main',$data);
+				//obtiene especialiades
+				$data->especialiades = $this->ProfesionalModel->getEspecialidades();
+				$this->load->view('template/header');
+				$this->load->view('template/nav');
+				$this->load->view('main',$data);
+			}else{
+				$this->Events();
+				echo "<script>window.location.href=". base_url("index.php/Events/")."</script>";
+			}
+			
 
 		}else if ($result === 'no') {
 			//usuario no existe
@@ -58,6 +64,15 @@ class Home extends CI_Controller {
 			$this->load->view('template/header');
 			$this->load->view('login');	
 		}
+	}
+
+	//llama index si tiene centro
+	public function Events(){	
+		$data['profesionales'] = $this->ProfesionalModel->getProfByCentro($this->session->userdata('idCentro'));
+		$this->load->view('template/header');
+		$this->load->view('template/nav');
+		$this->load->view('index2', $data);
+		//echo json_encode($data);
 	}
 
 	public function logout(){

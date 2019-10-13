@@ -45,6 +45,7 @@ $(document).ready(function(){
 		        		if (data.length > 17) {
 		        			//alert('hay datos');
 		        			$('#txtNomPac').val(obj.paciente.nombre+' '+obj.paciente.a_pat+' '+obj.paciente.a_mat);
+		        			$('#btnOK').attr("disabled", false);
 		        		}else{
 		        			$('#modalPreguntaPac').modal('show');
 		        			$('#txtRutPac').val($('#txtPaciente').val());
@@ -57,6 +58,14 @@ $(document).ready(function(){
 	    		alert('Ingrese rut');
 	    	}
     	}
+	});
+
+	//limpia inputs cuando el modal se cierra
+	$('#modalNew').on('hidden.bs.modal', function () {
+    	$('#btnOK').attr("disabled", true);
+    	$('#txtPaciente').val('');
+    	$('#txtobs').val('');
+    	$('#txtNomPac').val('');
 	});
 
 	//GUARDA EVENTO
@@ -129,6 +138,19 @@ $(document).ready(function(){
 		$('#modalNewPaciente').modal('show');
 	});
 
+	//limpia inputs cuando el modal de nuevo paciente se cierra
+	$('#modalNewPaciente').on('hidden.bs.modal', function () {
+    	//$('#btnOK').attr("disabled", true);
+    	$('#txtRutPac').val('');
+		$('#txtNomPac2').val('');
+		$('#txtApat').val('');
+		$('#txtAmat').val('');
+		$('#txtTel').val('');
+		$('#cboSexo2').val(''); 
+		$('#txtEmail2').val('');
+		$('#txtFnac').val('');
+	});
+
 	//NUEVO PACIENTE
 	$('#btnGuardaPac').click(function(){
 		var rut = $('#txtRutPac').val();
@@ -157,6 +179,7 @@ $(document).ready(function(){
 							toastr.success('Paciente guardado!');
 							$('#modalNewPaciente').modal('hide');
 							$('#txtNomPac').val(nom+' '+apat+' '+amat);
+							$('#btnOK').attr("disabled", false);
 						},
 						error: function(){
 							console.log('error al guardar paciente');
@@ -241,6 +264,10 @@ $(document).ready(function(){
 		var pass2 = $('#confirmPass').val();
 
 		var mail2 = $('#txt_mail_confirm').val();
+		var nomCompleto = nom+' '+apat+' '+amat;
+		var mensaje = "Hola "+"<strong>"+ nomCompleto+"</strong>"+" ,bienvenido a Clinic Calendar.<br>"+
+						"Para acceder a configurar tu centro médico y agenda picha el siguiente enlace: http://localhost/clinic_calendar/ <br>"+
+					   "Atentante, el equipo de Clinic Calendar";
 
 		if (email != mail2) {
 			toastr.error('Los correos no coinciden');
@@ -249,25 +276,32 @@ $(document).ready(function(){
 		}else {
 
 			if(pass1 === pass2){
-	         $.ajax({
-	         	type:'post',
-	         	url: baseUrl + 'User/Register',
-	         	data:{a_pat: apat, a_mat: amat, nombre: nom, email: email, pass: pass1},
-	         	success: function(){
-	         		alert('Usuario registrado exitosamente');
-	         		$('#txt_reg_nom').val('');
-					$('#txt_reg_apat').val('');
-					$('#txt_reg_amat').val('');
-					$('#txt_reg_email').val('');
-					$('#txt_reg_pass').val('');
-					$('#confirmPass').val('');
-					$('#txt_mail_confirm').val('');
-	         	},
-	         	error: function(){
-	         		toastr.error('Error al intentar registrar usuario');
-	         	}
-	         });
-
+	        	var promise = $.ajax({
+		         	type:'post',
+		         	url: baseUrl + 'User/Register',
+		         	data:{a_pat: apat, a_mat: amat, nombre: nom, email: email, pass: pass1},
+		         	success: function(){
+		         		alert('Usuario registrado exitosamente. Serás redirigido al inicio de sesión.');
+		         		$('#txt_reg_nom').val('');
+						$('#txt_reg_apat').val('');
+						$('#txt_reg_amat').val('');
+						$('#txt_reg_email').val('');
+						$('#txt_reg_pass').val('');
+						$('#confirmPass').val('');
+						$('#txt_mail_confirm').val('');
+						window.location.href=baseUrl+ 'Home';
+		         	},
+		         	error: function(){
+		         		toastr.error('Error al intentar registrar usuario');
+		         	}
+		         });
+	        	promise.then(function(){
+	        		$.ajax({
+	        			type:'post',
+	        			url: baseUrl+'User/sendMail',
+	        			data: {subject: email,mensaje: mensaje},
+	        		});
+	        	});
 	         
 		    }else if(pass1 !== pass2){
 		         //Si no son iguales

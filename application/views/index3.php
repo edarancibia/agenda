@@ -5,7 +5,12 @@
 </head>
 <script type="text/javascript">
 $(document).ready(function(){
+  $('#btnOK').attr("disabled", true);
   var baseUrl = 'http://localhost/clinic_calendar/index.php/';
+
+  if (<?= $this->session->userdata('perfil');  ?> == 0) {
+    $('#btnComenzar').attr("disabled", true);
+  }
 
     //INDEX - - - GET EVENTOS BY PROFESIONAL
 
